@@ -1,0 +1,32 @@
+// This is a basic example of silent aim
+void SilentAim() {
+    DWORD processId = GetRobloxProcessId();
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processId);
+
+    if (hProcess == NULL) {
+        MessageBoxA(NULL, "Failed to open roblox Pro ", "Error", MB_OK | MB_ICONERROR);
+        return;
+    }
+
+    // workspace offset
+    DWORD64 workspaceAddress = 0x12345678; // if u hvaent got a brain this is just an example offset
+     
+
+// if you cant read this is getting the closest player 
+    while (true) {
+        Vector3 closestPlayer = GetClosestPlayer(hProcess, workspaceAddress);
+
+        //  aim target 
+        DWORD64 aimTargetAddress = ReadMemory<DWORD64>(hProcess, workspaceAddress + 0x200);
+        WriteMemory<Vector3>(hProcess, aimTargetAddress + 0x38, closestPlayer); 
+
+        Sleep(10); 
+    }
+
+    CloseHandle(hProcess);
+}
+
+int main() {
+    SilentAim();
+    return 0;
+}
